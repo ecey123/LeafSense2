@@ -1,0 +1,46 @@
+# =========================
+# PYTHON
+# =========================
+.venv/
+__pycache__/
+*.pyc
+
+# =========================
+# MODELS (we use Drive)
+# =========================
+*.keras
+
+# =========================
+# DATASETS
+# =========================
+PlantVillage/
+processed_dataset/
+split_dataset/
+_cross_class_review/
+
+# =========================
+# TRAINING OUTPUTS
+# =========================
+results/
+results_finetune/
+results_corn_special/
+experiments/
+
+# =========================
+# NODE / EXPO
+# =========================
+node_modules/
+.expo/
+dist/
+build/
+
+# =========================
+# SYSTEM FILES
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# VSCODE
+# =========================
+.vscode/
