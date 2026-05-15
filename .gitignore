@@ -6,7 +6,7 @@ __pycache__/
 *.pyc
 
 # =========================
-# MODELS (we use Drive)
+# MODELS
 # =========================
 *.keras
 
@@ -33,12 +33,54 @@ node_modules/
 .expo/
 dist/
 build/
+web-build/
+expo-env.d.ts
+
+# =========================
+# NATIVE
+# =========================
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# =========================
+# METRO
+# =========================
+.metro-health-check*
+
+# =========================
+# DEBUG
+# =========================
+npm-debug.*
+yarn-debug.*
+yarn-error.*
 
 # =========================
 # SYSTEM FILES
 # =========================
 .DS_Store
 Thumbs.db
+*.pem
+
+# =========================
+# ENV
+# =========================
+.env*.local
+
+# =========================
+# TYPESCRIPT
+# =========================
+*.tsbuildinfo
+
+# =========================
+# GENERATED NATIVE FOLDERS
+# =========================
+/ios
+/android
 
 # =========================
 # VSCODE
