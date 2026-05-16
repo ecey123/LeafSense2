@@ -11,12 +11,12 @@ import {
 import TopHeader from "../components/TopHeader";
 import colors from "../constants/colors";
 
-export default function DiseaseDetailScreen({ route }) {
+export default function DiseaseDetailScreen({ route, navigation }) {
   const { disease } = route.params;
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
-      <TopHeader title={disease.name} />
+      <TopHeader title={disease.name} showBack onBack={() => navigation.goBack()} />
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <ImageBackground source={disease.images[0]} style={styles.hero}>

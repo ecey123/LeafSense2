@@ -75,11 +75,7 @@ export default function MyGardenScreen({ navigation }) {
                   <Text style={styles.name}>{item.diseaseName}</Text>
                   <Text style={styles.date}>{item.date}</Text>
 
-                  {item.confidence && (
-                    <Text style={styles.confidence}>
-                      Confidence: {item.confidence}
-                    </Text>
-                  )}
+                
 
                   <Text style={styles.tapText}>Tap to view details</Text>
                 </View>
@@ -154,11 +150,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
 
-  confidence: {
-    fontSize: 13,
-    color: colors.primary,
-    marginTop: 4,
-  },
+
 
   tapText: {
     fontSize: 12,

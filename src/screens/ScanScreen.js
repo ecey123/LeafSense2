@@ -15,10 +15,11 @@ import { CameraView, Camera } from "expo-camera";
 import TopHeader from "../components/TopHeader";
 import colors from "../constants/colors";
 import { saveGardenItem } from "../utils/gardenStorage";
+import plants from "../data/plantsData";
 
 const API_URL = "http://192.168.1.25:8000/predict";
 
-export default function ScanScreen() {
+export default function ScanScreen({ navigation }) {
   const cameraRef = useRef(null);
 
   const [cameraPermission, setCameraPermission] = useState(null);
@@ -115,6 +116,18 @@ export default function ScanScreen() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const findDisease = () => {
+    if (!result || result.status !== "success") return null;
+
+    const cropName = result.crop_prediction?.toLowerCase();
+    const diseaseName = result.result
+      ?.replace(result.crop_prediction + " ", "")
+      .trim();
+
+    const plant = plants.find((p) => p.id === cropName);
+    return plant?.diseases.find((d) => d.name === diseaseName) || null;
   };
 
   const clearPhoto = () => {
@@ -214,18 +227,27 @@ export default function ScanScreen() {
                 🌱 Plant: <Text style={styles.bold}>{result.crop_prediction}</Text>
               </Text>
 
-      
-
               <Text style={styles.resultText}>
                 🦠 Disease: <Text style={styles.bold}>{result.result}</Text>
               </Text>
-
-          
 
               {result.tip && (
                 <View style={styles.tipBox}>
                   <Text style={styles.tipText}>💡 {result.tip}</Text>
                 </View>
+              )}
+
+              {findDisease() && (
+                <TouchableOpacity
+                  style={styles.detailLink}
+                  onPress={() =>
+                    navigation.navigate("DiseaseDetail", { disease: findDisease() })
+                  }
+                >
+                  <Text style={styles.detailLinkText}>
+                    Tap to see more details →
+                  </Text>
+                </TouchableOpacity>
               )}
             </>
           )}
@@ -381,6 +403,17 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontSize: 13,
     lineHeight: 19,
+  },
+
+  detailLink: {
+    marginTop: 8,
+    alignItems: "center",
+  },
+
+  detailLinkText: {
+    color: colors.primary,
+    fontWeight: "600",
+    fontSize: 13,
   },
 
   loadingBox: {

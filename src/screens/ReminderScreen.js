@@ -78,6 +78,23 @@ export default function ReminderScreen() {
     Keyboard.dismiss();
   };
 
+  const deletePlant = (plantId) => {
+    Alert.alert("Delete Plant", "Are you sure you want to delete this plant?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: () => {
+          const updated = plants.filter((p) => p.id !== plantId);
+          setPlants(updated);
+          if (selectedPlantId === plantId) {
+            setSelectedPlantId(updated.length > 0 ? updated[0].id : null);
+          }
+        },
+      },
+    ]);
+  };
+
   const addWateringRecord = () => {
     if (!selectedPlant) {
       Alert.alert("Warning", "Please add a plant first.");
@@ -193,33 +210,6 @@ export default function ReminderScreen() {
     return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
   };
 
-  const isToday = (date) => {
-    const d = new Date(date);
-    const today = new Date();
-    return d.toDateString() === today.toDateString();
-  };
-
-  const isYesterday = (date) => {
-    const d = new Date(date);
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    return d.toDateString() === yesterday.toDateString();
-  };
-
-  const todayRecords = selectedPlant
-    ? selectedPlant.records.filter((r) => isToday(r.date))
-    : [];
-
-  const yesterdayRecords = selectedPlant
-    ? selectedPlant.records.filter((r) => isYesterday(r.date))
-    : [];
-
-  const olderRecords = selectedPlant
-    ? selectedPlant.records.filter(
-        (r) => !isToday(r.date) && !isYesterday(r.date)
-      )
-    : [];
-
   const renderSectionTitle = (title) => (
     <View style={styles.titleBox}>
       <Text style={styles.sectionTitle}>{title}</Text>
@@ -238,6 +228,12 @@ export default function ReminderScreen() {
         <View style={{ flex: 1 }}>
           <Text style={styles.recordTitle}>Watered</Text>
           <Text style={styles.recordText}>
+            {d.toLocaleDateString([], {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })}
+            {" · "}
             {d.toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
@@ -284,14 +280,26 @@ export default function ReminderScreen() {
                 ]}
                 onPress={() => setSelectedPlantId(plant.id)}
               >
-                <Text
-                  style={[
-                    styles.plantChipText,
-                    selectedPlantId === plant.id && styles.activePlantChipText,
-                  ]}
-                >
-                  {plant.name}
-                </Text>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+                  <Text
+                    style={[
+                      styles.plantChipText,
+                      selectedPlantId === plant.id && styles.activePlantChipText,
+                    ]}
+                  >
+                    {plant.name}
+                  </Text>
+                  <TouchableOpacity onPress={() => deletePlant(plant.id)}>
+                    <Text
+                      style={[
+                        styles.chipDelete,
+                        selectedPlantId === plant.id && { color: "#fff" },
+                      ]}
+                    >
+                      ×
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -365,28 +373,10 @@ export default function ReminderScreen() {
 
             {renderSectionTitle("Watering History")}
 
-            <Text style={styles.dayTitle}>Today</Text>
-            <View style={styles.line} />
-            {todayRecords.length === 0 ? (
-              <Text style={styles.emptySmall}>No record today.</Text>
+            {selectedPlant.records.length === 0 ? (
+              <Text style={styles.emptySmall}>No watering record yet.</Text>
             ) : (
-              todayRecords.map(renderRecord)
-            )}
-
-            <Text style={styles.dayTitle}>Yesterday</Text>
-            <View style={styles.line} />
-            {yesterdayRecords.length === 0 ? (
-              <Text style={styles.emptySmall}>No record yesterday.</Text>
-            ) : (
-              yesterdayRecords.map(renderRecord)
-            )}
-
-            <Text style={styles.dayTitle}>Older</Text>
-            <View style={styles.line} />
-            {olderRecords.length === 0 ? (
-              <Text style={styles.emptySmall}>No older record.</Text>
-            ) : (
-              olderRecords.map(renderRecord)
+              selectedPlant.records.map(renderRecord)
             )}
           </>
         )}
@@ -485,17 +475,25 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
 
-  waterButton: { 
+  chipDelete: {
+    fontSize: 18,
+    color: colors.muted,
+    fontWeight: "bold",
+    marginTop: -1,
+  },
+
+  waterButton: {
     width: 165,
-     height: 165, 
-     borderRadius: 90, 
-     backgroundColor: "#EAF8FF",
-      alignItems: "center", 
-      justifyContent: "center", 
-      alignSelf: "center", 
-      marginTop: 30, 
-      borderWidth: 1,
-       borderColor: "#BDEBFA", },
+    height: 165,
+    borderRadius: 90,
+    backgroundColor: "#EAF8FF",
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
+    marginTop: 30,
+    borderWidth: 1,
+    borderColor: "#BDEBFA",
+  },
 
   waterImage: {
     width: 70,
@@ -504,26 +502,27 @@ const styles = StyleSheet.create({
   },
 
   waterButtonSub: {
-     color: "#3E9FC4",
-      fontSize: 14,
-       fontWeight: "bold",
-        marginTop: 8, },
+    color: "#3E9FC4",
+    fontSize: 14,
+    fontWeight: "bold",
+    marginTop: 8,
+  },
 
   sectionTitle: {
-  fontSize: 16,
-  fontWeight: "bold",
-  color: colors.text,
-},
+    fontSize: 16,
+    fontWeight: "bold",
+    color: colors.text,
+  },
 
   titleBox: {
-  backgroundColor: "#FFFFFF", 
-  paddingVertical: 8,
-  paddingHorizontal: 14,
-  borderRadius: 14,
-  marginTop: 22,
-  marginBottom: 10,
-  alignSelf: "flex-start",
-},
+    backgroundColor: "#FFFFFF",
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 14,
+    marginTop: 22,
+    marginBottom: 10,
+    alignSelf: "flex-start",
+  },
 
   reminderBox: {
     backgroundColor: "#fff",
@@ -582,19 +581,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  dayTitle: {
-    marginTop: 14,
-    fontSize: 16,
-    fontWeight: "bold",
-    color: colors.text,
-  },
-
-  line: {
-    height: 1,
-    backgroundColor: "#ddd",
-    marginVertical: 8,
-  },
-
   recordCard: {
     flexDirection: "row",
     alignItems: "center",
@@ -646,6 +632,7 @@ const styles = StyleSheet.create({
   emptySmall: {
     color: colors.muted,
     marginBottom: 8,
+    marginTop: 4,
   },
 
   modalOverlay: {

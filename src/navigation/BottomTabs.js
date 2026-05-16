@@ -5,8 +5,7 @@ import colors from "../constants/colors";
 
 import ExploreStack from "./ExploreStack";
 import BlogStack from "./BlogStack";
-import BlogScreen from "../screens/BlogScreen";
-import ScanScreen from "../screens/ScanScreen";
+import ScanStack from "./ScanStack";
 import ReminderScreen from "../screens/ReminderScreen";
 import MyGardenScreen from "../screens/MyGardenScreen";
 
@@ -83,9 +82,7 @@ export default function BottomTabs() {
                     height: 50,
                     borderRadius: 25,
                     borderWidth: 2,
-                    borderColor: focused
-                      ? colors.primary
-                      : colors.muted,
+                    borderColor: focused ? colors.primary : colors.muted,
                     justifyContent: "center",
                     alignItems: "center",
                   }}
@@ -98,11 +95,7 @@ export default function BottomTabs() {
 
           if (route.name === "Reminder") {
             return (
-              <Ionicons
-                name="notifications-outline"
-                size={24}
-                color={color}
-              />
+              <Ionicons name="notifications-outline" size={24} color={color} />
             );
           }
 
@@ -120,7 +113,7 @@ export default function BottomTabs() {
     >
       <Tab.Screen name="Explore" component={ExploreStack} />
       <Tab.Screen name="Blog" component={BlogStack} />
-      <Tab.Screen name="Scan" component={ScanScreen} />
+      <Tab.Screen name="Scan" component={ScanStack} />
       <Tab.Screen name="Reminder" component={ReminderScreen} />
       <Tab.Screen name="My Garden" component={MyGardenScreen} />
     </Tab.Navigator>
