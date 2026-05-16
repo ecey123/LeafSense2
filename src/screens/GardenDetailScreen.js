@@ -65,11 +65,12 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    color: "#fff",
-    fontSize: 26,
-    fontWeight: "bold",
-    margin: 16,
-  },
+  color: "#fff",
+  fontSize: 26,
+  fontWeight: "bold",
+  marginHorizontal: 16,
+  marginBottom: 30,
+},
 
   content: {
     backgroundColor: "#fff",

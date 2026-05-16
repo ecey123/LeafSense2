@@ -17,7 +17,7 @@ import colors from "../constants/colors";
 import { saveGardenItem } from "../utils/gardenStorage";
 import plants from "../data/plantsData";
 
-const API_URL = "http://192.168.1.25:8000/predict";
+const API_URL = "http://192.168.1.4:8000/predict";
 
 export default function ScanScreen({ navigation }) {
   const cameraRef = useRef(null);

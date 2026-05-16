@@ -49,11 +49,12 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.35)",
   },
   title: {
-    color: "#fff",
-    fontSize: 26,
-    fontWeight: "bold",
-    margin: 16,
-  },
+  color: "#fff",
+  fontSize: 26,
+  fontWeight: "bold",
+  marginHorizontal: 16,
+  marginBottom: 30,
+},
   content: {
     backgroundColor: "#fff",
     borderTopLeftRadius: 25,
