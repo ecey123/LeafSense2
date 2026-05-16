@@ -16,7 +16,7 @@ import TopHeader from "../components/TopHeader";
 import colors from "../constants/colors";
 import { saveGardenItem } from "../utils/gardenStorage";
 
-const API_URL = "http://192.168.1.4:8000/predict";
+const API_URL = "http://192.168.1.25:8000/predict";
 
 export default function ScanScreen() {
   const cameraRef = useRef(null);
@@ -101,12 +101,14 @@ export default function ScanScreen() {
 
       setResult(data);
 
-      await saveGardenItem({
-        imageUri: imageUri,
-        diseaseName: data.disease_prediction,
-        confidence: (data.disease_confidence * 100).toFixed(1) + "%",
-        description: "Detected from scan",
-      });
+      if (data.status === "success") {
+        await saveGardenItem({
+          imageUri: imageUri,
+          diseaseName: data.result,
+          confidence: (data.disease_confidence * 100).toFixed(1) + "%",
+          description: "Detected from scan",
+        });
+      }
     } catch (error) {
       console.log(error);
       Alert.alert("Connection error", "Backend'e ulaşılamadı.");
@@ -202,26 +204,33 @@ export default function ScanScreen() {
         <View style={styles.resultBox}>
           <Text style={styles.resultTitle}>Result</Text>
 
-          <Text style={styles.resultText}>
-            Plant: {result.crop_prediction}
-          </Text>
+          {result.status === "rejected" ? (
+            <Text style={styles.rejectedText}>
+              🌿 Please upload a clear leaf image.
+            </Text>
+          ) : (
+            <>
+              <Text style={styles.resultText}>
+                🌱 Plant: <Text style={styles.bold}>{result.crop_prediction}</Text>
+              </Text>
 
-          <Text style={styles.resultText}>
-            Plant Confidence: {(result.crop_confidence * 100).toFixed(1)}%
-          </Text>
+      
 
-          <Text style={styles.resultText}>
-            Disease: {result.disease_prediction}
-          </Text>
+              <Text style={styles.resultText}>
+                🦠 Disease: <Text style={styles.bold}>{result.result}</Text>
+              </Text>
 
-          <Text style={styles.resultText}>
-            Disease Confidence: {(result.disease_confidence * 100).toFixed(1)}%
-          </Text>
+          
 
-          <TouchableOpacity
-            style={styles.scanAnotherButton}
-            onPress={clearPhoto}
-          >
+              {result.tip && (
+                <View style={styles.tipBox}>
+                  <Text style={styles.tipText}>💡 {result.tip}</Text>
+                </View>
+              )}
+            </>
+          )}
+
+          <TouchableOpacity style={styles.scanAnotherButton} onPress={clearPhoto}>
             <Text style={styles.scanAnotherText}>Scan Another</Text>
           </TouchableOpacity>
         </View>
@@ -348,6 +357,30 @@ const styles = StyleSheet.create({
   resultText: {
     color: colors.text,
     marginBottom: 4,
+  },
+
+  bold: {
+    fontWeight: "bold",
+  },
+
+  rejectedText: {
+    color: colors.text,
+    fontSize: 15,
+    marginBottom: 8,
+    textAlign: "center",
+  },
+
+  tipBox: {
+    marginTop: 10,
+    backgroundColor: "#f0f8f0",
+    borderRadius: 12,
+    padding: 10,
+  },
+
+  tipText: {
+    color: colors.primary,
+    fontSize: 13,
+    lineHeight: 19,
   },
 
   loadingBox: {
